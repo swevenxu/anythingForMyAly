@@ -32,7 +32,6 @@ const TOPIC_COLORS: Record<string, string> = {
   'Advanced Financial Accounting and Reporting': '#8b5cf6', // Purple
   'Management Services': '#10b981',                      // Green
   'Auditing Theory': '#f59e0b',                         // Amber
-  'Auditing Practice': '#ef4444',                       // Red
   'Taxation': '#06b6d4',                                // Cyan
   'Regulatory Framework for Business Transactions': '#ec4899', // Pink
 };
@@ -43,7 +42,6 @@ const TOPIC_ICONS: Record<string, string> = {
   'Advanced Financial Accounting and Reporting': '📊',
   'Management Services': '📈',
   'Auditing Theory': '🔍',
-  'Auditing Practice': '✅',
   'Taxation': '💵',
   'Regulatory Framework for Business Transactions': '⚖️',
 };

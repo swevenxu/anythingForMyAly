@@ -23,7 +23,6 @@ SUBJECT_TO_TOPIC = {
     "afar": "Advanced Financial Accounting and Reporting",
     "ms":   "Management Services",
     "at":   "Auditing Theory",
-    "ap":   "Auditing Practice",
     "tax":  "Taxation",
     "rfbt": "Regulatory Framework for Business Transactions",
 }

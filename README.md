@@ -161,7 +161,7 @@ Run the setup script to populate default topics:
 npm run setup
 ```
 
-This creates the Pinnacle CPA exam topics (FAR, AFAR, MS, AT, AP, TAX, RFBT).
+This creates the Pinnacle CPA exam topics (FAR, AFAR, MS, AT, TAX, RFBT).
 
 ### 6. Start Development Servers
 
