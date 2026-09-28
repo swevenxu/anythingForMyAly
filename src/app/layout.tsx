@@ -25,13 +25,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={khand.variable}>
-      <head>
-        {/* Tanker is a Fontshare font (not on Google Fonts) */}
-        <link
-          href="https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       <body>
         <ErrorBoundary>
           <div className="app-layout">

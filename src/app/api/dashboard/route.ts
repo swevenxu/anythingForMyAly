@@ -14,7 +14,6 @@ const emptyDashboard: DashboardStats = {
     attemptCount: 0,
     correctCount: 0,
     mastery: 0,
-    color: null,
   })),
   weakSubjects: [],
 };
@@ -22,7 +21,6 @@ const emptyDashboard: DashboardStats = {
 interface TopicRow {
   id: string;
   name: string;
-  color: string;
 }
 
 interface QuestionRow {
@@ -36,22 +34,13 @@ interface AttemptRow {
   answered_at: string;
 }
 
-/**
- * Normalizes topic names so "auditing theory " or "Auditing Theory!" still
- * match a Pinnacle subject. Falls back to the subject code (e.g. "FAR").
- */
-function matchesSubject(topicName: string, subjectName: string, subjectCode: string): boolean {
-  const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '');
-  return norm(topicName) === norm(subjectName) || norm(topicName) === norm(subjectCode);
-}
-
 export async function GET() {
   const supabase = getServerSupabase();
   if (!supabase) return NextResponse.json(emptyDashboard);
 
   try {
     const [topicsRes, questionsRes, attemptsRes, quizzesRes] = await Promise.all([
-      supabase.from('topics').select('id, name, color'),
+      supabase.from('topics').select('id, name'),
       supabase.from('questions').select('id, topic_id').eq('format', 'multiple_choice'),
       supabase
         .from('attempt_log')
@@ -71,9 +60,9 @@ export async function GET() {
     const attempts = (attemptsRes.data as AttemptRow[]) || [];
     const quizzes = (quizzesRes.data as { topic_id: string | null }[]) || [];
 
-    // topic id -> topic row (color lookup + name matching)
-    const topicById = new Map<string, TopicRow>();
-    for (const t of topics) topicById.set(t.id, t);
+    // topic id -> name (for PINNACLE_SUBJECTS matching)
+    const topicNameById = new Map<string, string>();
+    for (const t of topics) topicNameById.set(t.id, t.name);
 
     // question id -> topic_id
     const qToTopic = new Map<string, string | null>();
@@ -105,23 +94,34 @@ export async function GET() {
       quizCountByTopic.set(q.topic_id, (quizCountByTopic.get(q.topic_id) || 0) + 1);
     }
 
+    // topic id -> aggregate stats
+    const statsByTopicName = new Map<
+      string,
+      { attempted: number; correct: number; quizCount: number }
+    >();
+    for (const t of topics) {
+      const s = perTopic.get(t.id) || { attempted: 0, correct: 0 };
+      statsByTopicName.set(t.name, {
+        attempted: s.attempted,
+        correct: s.correct,
+        quizCount: quizCountByTopic.get(t.id) || 0,
+      });
+    }
+
     const subjects: SubjectMastery[] = PINNACLE_SUBJECTS.map((subject) => {
-      // Match the topic row by exact/normalized name or subject code.
-      const topicRow = topics.find((t) => matchesSubject(t.name, subject.name, subject.code));
-
-      const attempted = topicRow ? perTopic.get(topicRow.id)?.attempted ?? 0 : 0;
-      const correct = topicRow ? perTopic.get(topicRow.id)?.correct ?? 0 : 0;
-      const quizCount = topicRow ? quizCountByTopic.get(topicRow.id) ?? 0 : 0;
-      const mastery = attempted === 0 ? 0 : correct / attempted;
-
+      const stats = statsByTopicName.get(subject.name) || {
+        attempted: 0,
+        correct: 0,
+        quizCount: 0,
+      };
+      const mastery = stats.attempted === 0 ? 0 : stats.correct / stats.attempted;
       return {
         code: subject.code,
         name: subject.name,
-        quizCount,
-        attemptCount: attempted,
-        correctCount: correct,
+        quizCount: stats.quizCount,
+        attemptCount: stats.attempted,
+        correctCount: stats.correct,
         mastery,
-        color: topicRow?.color ?? null,
       };
     });
 
