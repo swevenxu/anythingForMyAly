@@ -1,14 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import SubjectCard from '@/components/SubjectCard';
 import type { DashboardStats, SubjectMastery } from '@/types';
-
-function masteryTone(mastery: number, attemptCount: number) {
-  if (attemptCount === 0) return 'var(--text-muted)';
-  if (mastery >= 0.8) return 'var(--accent-emerald)';
-  if (mastery >= 0.5) return 'var(--accent-amber)';
-  return 'var(--accent-rose)';
-}
 
 function masteryFill(mastery: number, attemptCount: number) {
   if (attemptCount === 0) return 'var(--bg-elevated)';
@@ -61,12 +55,12 @@ export default function DashboardPage() {
           <h1 className="page-title">Dashboard</h1>
         </div>
         <div className="grid grid-3">
-          {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+          {[0, 1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="glass-card stat-card animate-in" style={{ animationDelay: `${i * 80}ms` }}>
               <div className="skeleton" style={{ width: 48, height: 16, borderRadius: 'var(--radius-sm)' }} />
-              <div className="skeleton" style={{ width: '40%', height: 36, marginTop: 16 }} />
-              <div className="skeleton" style={{ width: '80%', height: 14, marginTop: 8 }} />
-              <div className="skeleton" style={{ width: '100%', height: 8, marginTop: 16, borderRadius: 'var(--radius-full)' }} />
+              <div className="skeleton" style={{ width: 112, height: 112, marginTop: 16, borderRadius: '50%' }} />
+              <div className="skeleton" style={{ width: '40%', height: 14, marginTop: 16 }} />
+              <div className="skeleton" style={{ width: '60%', height: 14, marginTop: 8 }} />
             </div>
           ))}
         </div>
@@ -81,44 +75,9 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-3" style={{ marginBottom: 'var(--space-8)' }}>
-        {stats.subjects.map((subject) => {
-          const percent = Math.round(subject.mastery * 100);
-          return (
-            <div key={subject.code} className="glass-card stat-card animate-in">
-              <div className="stat-label" style={{ marginTop: 0 }}>{subject.code}</div>
-              <div
-                className="stat-value"
-                style={{ color: masteryTone(subject.mastery, subject.attemptCount) }}
-              >
-                {percent}%
-              </div>
-              <div
-                className="stat-label"
-                style={{
-                  color: 'var(--text-primary)',
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 700,
-                  lineHeight: 1.25,
-                  overflowWrap: 'anywhere',
-                }}
-              >
-                {subject.name}
-              </div>
-              <div className="progress-bar-track" style={{ marginTop: 'var(--space-4)' }}>
-                <div
-                  className="progress-bar-fill"
-                  style={{
-                    width: `${subject.attemptCount > 0 ? percent : 0}%`,
-                    background: masteryFill(subject.mastery, subject.attemptCount),
-                  }}
-                />
-              </div>
-              <div className="stat-detail" style={{ marginTop: 'var(--space-3)' }}>
-                {subjectDetail(subject)}
-              </div>
-            </div>
-          );
-        })}
+        {stats.subjects.map((subject, index) => (
+          <SubjectCard key={subject.code} subject={subject} index={index} />
+        ))}
       </div>
 
       {stats.weakSubjects.length > 0 && (
@@ -149,6 +108,17 @@ export default function DashboardPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {stats.subjects.length === 0 && (
+        <div className="empty-state">
+          <div className="empty-state-icon">📚</div>
+          <div className="empty-state-title">No subjects yet</div>
+          <div className="empty-state-description">
+            Run <code>npm run setup</code> to seed the Pinnacle CPA topics, then take some quizzes to
+            see your mastery here.
           </div>
         </div>
       )}

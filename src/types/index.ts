@@ -165,6 +165,8 @@ export interface SubjectMastery {
   attemptCount: number;
   correctCount: number;
   mastery: number;
+  /** Topic color from the topics table, or null when unseeded. */
+  color: string | null;
 }
 
 export interface DashboardStats {
