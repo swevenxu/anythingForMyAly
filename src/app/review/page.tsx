@@ -11,8 +11,6 @@ import {
     BookOpen,
     AlertTriangle,
     Zap,
-    Trophy,
-    Target,
 } from 'lucide-react';
 
 interface Option {
@@ -657,6 +655,22 @@ function CompletionSummary({
     const correct = results.filter(Boolean).length;
     const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
     const excellent = pct >= 80;
+    const [allComplete, setAllComplete] = useState(false);
+
+    useEffect(() => {
+        let cancelled = false;
+        async function check() {
+            try {
+                const res = await fetch('/api/completion-check', { cache: 'no-store' });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (!cancelled) setAllComplete(data.allComplete === true);
+                }
+            } catch { /* silent */ }
+        }
+        void check();
+        return () => { cancelled = true; };
+    }, []);
 
     return (
         <div
@@ -668,21 +682,6 @@ function CompletionSummary({
                 margin: '0 auto',
             }}
         >
-            {/* Trophy / Target icon */}
-            <div style={{ marginBottom: 'var(--space-4)' }}>
-                {excellent ? (
-                    <Trophy
-                        size={48}
-                        style={{ color: 'var(--accent-emerald)' }}
-                    />
-                ) : (
-                    <Target
-                        size={48}
-                        style={{ color: 'var(--accent-amber)' }}
-                    />
-                )}
-            </div>
-
             <h2
                 style={{
                     fontSize: 'var(--text-2xl)',
@@ -773,6 +772,39 @@ function CompletionSummary({
                     ? 'Great job! You\'re mastering these topics.'
                     : 'Keep practicing — you\'ll get there! Wrong answers stay in your review queue.'}
             </p>
+
+            {allComplete && (
+                <div style={{
+                    textAlign: 'left',
+                    marginBottom: 'var(--space-6)',
+                    padding: 'var(--space-6)',
+                    background: 'var(--bg-tertiary)',
+                    borderRadius: 'var(--radius-lg)',
+                    border: '1px solid var(--border-primary)',
+                    lineHeight: 1.8,
+                    fontSize: 'var(--text-sm)',
+                    color: 'var(--text-secondary)',
+                }}>
+                    <p style={{ marginBottom: 'var(--space-4)' }}>
+                        hey i see u finished it na, i just wanted to let you know that every part of me has always been proud of you. ive seen you through worse, seen you through your smiles but one thing is for sure that you are the most precious thing ive ever seen. im very proud of all your efforts, sleepless nights and all the stress that u had to cope with just to survive another day.
+                    </p>
+                    <p style={{ marginBottom: 'var(--space-4)' }}>
+                        im very happy that i get to live and stay with someone like you, i probably appreciate you more than you do (kidding lolll) but yeah, whatever it is that&apos;s going to happen whether it is in your/our favor or not just know that i&apos;ll always be here lang, through thick and thin aren&apos;t we!
+                    </p>
+                    <p style={{ marginBottom: 'var(--space-4)' }}>
+                        im very happy that i made this program for you, i know its not that much but im more than glad that i contributed. i love you always, mahal ko. you are the SMARTEST person ever!
+                    </p>
+                    <p style={{ marginBottom: 'var(--space-4)' }}>
+                        i don&apos;t know when are you going to finish these quizzes but if u have more time left please use it, napagod ka din naman na then what&apos;s there to lose pa if you&apos;ll keep going and mapagod pa right! it&apos;s not fine to get unproductive days but what can we do, u&apos;re also human, u get to feel things too. we&apos;ll get through this okay?
+                    </p>
+                    <p style={{ marginBottom: 'var(--space-4)' }}>
+                        use your remaining days/time pa to get ready, ik it&apos;s hard and gets emotional on the way but it is worth it for sure. some people might but me, i&apos;ll never get disappointed of you. i&apos;m always rooting for you, mahal.
+                    </p>
+                    <p style={{ marginBottom: 0 }}>
+                        i wish you all the best sa boards mo, don&apos;t think about anyone muna, enjoy it and find the fun. you got this, baby, you always do. :))
+                    </p>
+                </div>
+            )}
 
             <button className="btn btn-primary btn-lg" onClick={onExit}>
                 <RotateCcw size={16} /> Back to Review
