@@ -294,7 +294,7 @@ export default function FloatingChat() {
           <div className={`${styles['chat-message']} ${styles['chat-message-assistant']}`}>
             <div className={`${styles['chat-bubble']} ${styles['chat-thinking']}`}>
               <Loader2 size={15} className={styles.spin} />
-              Thinking…
+              Thinking
             </div>
           </div>
         )}
