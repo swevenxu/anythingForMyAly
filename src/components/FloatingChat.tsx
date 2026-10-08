@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { AlertCircle, Loader2, Send, Sparkles, Trash2, X } from 'lucide-react';
+import { AlertCircle, Send, Sparkles, Trash2, X } from 'lucide-react';
 import type { TabMessage } from '@/types';
 import styles from './FloatingChat.module.css';
 import MarkdownMessage from './MarkdownMessage';
@@ -293,8 +293,11 @@ export default function FloatingChat() {
         {sending && (
           <div className={`${styles['chat-message']} ${styles['chat-message-assistant']}`}>
             <div className={`${styles['chat-bubble']} ${styles['chat-thinking']}`}>
-              <Loader2 size={15} className={styles.spin} />
-              Thinking
+              <span className={styles['chat-thinking-dots']} aria-label="Assistant is responding">
+                <i />
+                <i />
+                <i />
+              </span>
             </div>
           </div>
         )}

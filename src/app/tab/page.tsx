@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Sparkles, Send, AlertCircle, Loader2, Trash2 } from 'lucide-react';
+import { Sparkles, Send, AlertCircle, Trash2 } from 'lucide-react';
 import type { TabMode, TabMessage } from '@/types';
 import styles from './page.module.css';
 import MarkdownMessage from '@/components/MarkdownMessage';
@@ -228,8 +228,6 @@ export default function AiTabPage() {
           {sending && (
             <div className={`${styles['ai-message']} ${styles['ai-message-assistant']} ${styles['ai-message-sending']}`}>
               <div className={`${styles['ai-message-bubble']} ${styles['ai-thinking']}`}>
-                <Loader2 size={18} className="spin" />
-                <span>{mode === 'quiz' ? 'Generating quiz' : 'Generating notes'}</span>
                 <span className={styles['ai-thinking-dots']} aria-hidden="true">
                   <i />
                   <i />
