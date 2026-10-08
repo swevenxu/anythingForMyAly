@@ -3,6 +3,7 @@ import { Khand } from 'next/font/google';
 import './globals.css';
 import './ui-fixes.css';
 import Sidebar from '@/components/Sidebar';
+import FloatingChat from '@/components/FloatingChat';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 const khand = Khand({
@@ -31,6 +32,7 @@ export default function RootLayout({
             <Sidebar />
             <main className="main-content">{children}</main>
           </div>
+          <FloatingChat />
         </ErrorBoundary>
       </body>
     </html>

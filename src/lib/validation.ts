@@ -69,6 +69,16 @@ export const importFileSchema = z.object({
 });
 
 // ============================================================
+// AI Tab
+// ============================================================
+
+export const tabRequestSchema = z.object({
+  mode: z.enum(['chat', 'notes', 'quiz']),
+  message: z.string().min(1, 'Message is required').optional(),
+  fileId: z.string().uuid('Invalid file ID').optional(),
+});
+
+// ============================================================
 // Helper function to validate and return parsed data or error
 // ============================================================
 

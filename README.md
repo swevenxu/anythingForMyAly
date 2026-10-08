@@ -231,7 +231,7 @@ study-hub/
 The application uses a dual-provider setup:
 
 **Groq (Primary)**
-- Model: `llama-3.3-70b-versatile`
+- Model: `openai/gpt-oss-120b`
 - Fast inference
 - Free tier limits: 30 RPM, 6K TPM, 14.4K RPD
 - Automatic rate limiting with sliding window

@@ -24,6 +24,38 @@ export class AppError extends Error {
 }
 
 // ============================================================
+// AI Tab Types
+// ============================================================
+
+export type TabMode = 'chat' | 'notes' | 'quiz';
+
+export interface TabMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  mode: TabMode;
+  fileId?: string;
+  createdAt: number;
+}
+
+export interface TabRequest {
+  mode: TabMode;
+  message?: string;
+  fileId?: string;
+}
+
+export interface TabResponse {
+  role: 'assistant';
+  content: string;
+  usedFileContext?: boolean;
+}
+
+export interface PageText {
+  pageNumber: number;
+  text: string;
+}
+
+// ============================================================
 // Database Record Types (matching Supabase schema)
 // ============================================================
 

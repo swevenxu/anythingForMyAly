@@ -29,6 +29,8 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   min-width: 0; /* Allow flex child to shrink */
+  /* Keep page actions clear of the floating chat launcher in the corner. */
+  padding-bottom: calc(var(--space-16) + var(--space-8));
 }
 
 .page-container {

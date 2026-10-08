@@ -11,10 +11,12 @@ import {
   RotateCcw,
   Menu,
   X,
+  Sparkles,
 } from 'lucide-react';
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/tab', label: 'AI', icon: Sparkles },
   { href: '/quizzes', label: 'Quizzes', icon: BrainCircuit },
   { href: '/review', label: 'Review', icon: RotateCcw },
   { href: '/progress', label: 'Progress', icon: TrendingUp },

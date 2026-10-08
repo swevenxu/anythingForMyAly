@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test --import ./scripts/test-bootstrap.mjs src/lib/mcq-flow.test.ts src/lib/completion-check.test.ts",
+    "test": "node --test --import ./scripts/test-bootstrap.mjs src/lib/mcq-flow.test.ts src/lib/completion-check.test.ts src/lib/quiz-prompt.test.ts src/lib/notes-prompt.test.ts src/app/api/tab/route.test.ts",
     "setup": "tsx scripts/seed-topics.ts"
   },
   "dependencies": {
@@ -19,13 +19,13 @@
     "zod": "^4.6.2"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^19",
+    "@types/node": "20.19.43",
+    "@types/react": "19.3.0",
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
     "tsx": "^4.23.13",
-    "typescript": "^5"
+    "typescript": "5.9.3"
   }
 }
