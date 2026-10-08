@@ -229,7 +229,12 @@ export default function AiTabPage() {
             <div className={`${styles['ai-message']} ${styles['ai-message-assistant']} ${styles['ai-message-sending']}`}>
               <div className={`${styles['ai-message-bubble']} ${styles['ai-thinking']}`}>
                 <Loader2 size={18} className="spin" />
-                Thinking
+                <span>{mode === 'quiz' ? 'Generating quiz' : 'Generating notes'}</span>
+                <span className={styles['ai-thinking-dots']} aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </span>
               </div>
             </div>
           )}
