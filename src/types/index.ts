@@ -27,7 +27,7 @@ export class AppError extends Error {
 // AI Tab Types
 // ============================================================
 
-export type TabMode = 'chat' | 'notes' | 'quiz';
+export type TabMode = 'chat' | 'notes' | 'quiz' | 'formula';
 
 export interface TabMessage {
   id: string;

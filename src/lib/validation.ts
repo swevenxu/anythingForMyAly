@@ -73,7 +73,7 @@ export const importFileSchema = z.object({
 // ============================================================
 
 export const tabRequestSchema = z.object({
-  mode: z.enum(['chat', 'notes', 'quiz']),
+  mode: z.enum(['chat', 'notes', 'quiz', 'formula']),
   message: z.string().min(1, 'Message is required').optional(),
   fileId: z.string().uuid('Invalid file ID').optional(),
 });

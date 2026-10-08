@@ -14,11 +14,13 @@ type TabPageMode = Exclude<TabMode, 'chat'>;
 const MODE_LABELS: Record<TabPageMode, string> = {
   notes: 'Generate notes',
   quiz: 'Generate quiz',
+  formula: 'Generate formulas',
 };
 
 const MODE_DESCRIPTIONS: Record<TabPageMode, string> = {
   notes: 'Board-style study notes on any topic.',
   quiz: 'AI-generated board-style practice questions.',
+  formula: 'Formula-identification practice questions.',
 };
 
 const QUICK_PROMPTS: Record<TabPageMode, Array<{ label: string; prompt: string }>> = {
@@ -37,6 +39,14 @@ const QUICK_PROMPTS: Record<TabPageMode, Array<{ label: string; prompt: string }
     { label: 'Auditing Theory', prompt: 'Auditing theory quiz on audit evidence and sampling, 15 items.' },
     { label: 'Taxation', prompt: 'Taxation quiz on VAT and percentage tax, 10 items, medium difficulty.' },
     { label: 'RFBT', prompt: 'RFBT quiz on obligations and contracts, 15 items, hard difficulty.' },
+  ],
+  formula: [
+    { label: 'MAS', prompt: 'Formula quiz on MAS cost-volume-profit analysis.' },
+    { label: 'FAR', prompt: 'Formula quiz on FAR income taxes (PAS 12), EPS, and financial ratios.' },
+    { label: 'AFAR', prompt: 'Formula quiz on AFAR business combinations and consolidation.' },
+    { label: 'Taxation', prompt: 'Formula quiz on Philippine taxation computations, rates, and thresholds.' },
+    { label: 'Auditing', prompt: 'Formula quiz on audit risk, materiality, and audit sampling.' },
+    { label: 'RFBT', prompt: 'Formula quiz on RFBT computations and high-yield legal tests.' },
   ],
 };
 
@@ -159,7 +169,7 @@ export default function AiTabPage() {
         ))}
       </div>
 
-      {/* Quick-start prompts for the built-in notes and quiz generation */}
+      {/* Quick-start prompts for the built-in study tools */}
       {!sending && (
         <div className={styles['ai-suggestions']}>
           <span className={styles['ai-suggestions-label']}>Quick start</span>
@@ -199,7 +209,9 @@ export default function AiTabPage() {
               <p className={styles['ai-empty-desc']}>
                 {mode === 'quiz'
                   ? 'Ask for a quiz on any CPA subject — for example "Taxation quiz on VAT, 10 items, medium difficulty". No file needed.'
-                  : 'Ask for notes on any CPA topic — for example "PAS 12 deferred tax", or how PFRS 15 revenue recognition works.'}
+                  : mode === 'formula'
+                    ? 'Take a formula quiz on any CPA topic — for example "MAS formula quiz on CVP analysis". No file needed.'
+                    : 'Ask for notes on any CPA topic — for example "PAS 12 deferred tax", or how PFRS 15 revenue recognition works.'}
               </p>
             </div>
           )}
@@ -213,7 +225,7 @@ export default function AiTabPage() {
               </div>
               <div className={styles['ai-message-bubble']}>
                 {msg.role === 'assistant' ? (
-                  msg.mode === 'quiz' ? (
+                  (msg.mode === 'quiz' || msg.mode === 'formula') ? (
                     <QuizMessage content={msg.content} />
                   ) : (
                     <MarkdownMessage content={msg.content} />

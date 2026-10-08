@@ -12,7 +12,7 @@ interface QuizItem {
 }
 
 function parseQuiz(content: string): QuizItem[] {
-  const lines = content.replace(/\r\n/g, '\n').split('\n');
+  const lines = expandQuizTables(content.replace(/\r\n/g, '\n')).split('\n');
   const answerKeyIndex = lines.findIndex((line) => /answer\s*key/i.test(line));
   const questionLines = answerKeyIndex >= 0 ? lines.slice(0, answerKeyIndex) : lines;
   const answerLines = answerKeyIndex >= 0 ? lines.slice(answerKeyIndex + 1) : [];
@@ -42,7 +42,9 @@ function parseQuiz(content: string): QuizItem[] {
     const answerMatch = line
       .trim()
       .replace(/\*\*/g, '')
-      .match(/^(\d+)[.)]\s*([A-D])(?:\s*[-:.)—–]\s*(.*))?$/i);
+      .replace(/^\||\|$/g, '')
+      .replace(/\|/g, ' ')
+      .match(/^\s*(\d+)\s*[.)]?\s*([A-D])(?:\s*(?:[-:.)—–]\s*)?(.*))?$/i);
     if (!answerMatch) continue;
     const item = items.find((entry) => entry.number === Number(answerMatch[1]));
     if (item) {
@@ -52,6 +54,54 @@ function parseQuiz(content: string): QuizItem[] {
   }
 
   return items.filter((item) => item.options.length >= 2);
+}
+
+function expandQuizTables(content: string): string {
+  const lines = content.split('\n');
+  const expanded: string[] = [];
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const header = lines[index]?.trim();
+    const separator = lines[index + 1]?.trim();
+    if (
+      !header?.startsWith('|') ||
+      !separator?.startsWith('|') ||
+      !/^[-|:\s]+$/.test(separator)
+    ) {
+      expanded.push(lines[index]);
+      continue;
+    }
+
+    const headers = header
+      .replace(/^\||\|$/g, '')
+      .split('|')
+      .map((cell) => cell.trim().toLowerCase());
+    const numberIndex = headers.findIndex((cell) => cell === '#' || cell.includes('number'));
+    const questionIndex = headers.findIndex((cell) => cell.includes('scenario') || cell.includes('question'));
+    const optionsIndex = headers.findIndex((cell) => cell.includes('option'));
+    if (numberIndex < 0 || questionIndex < 0 || optionsIndex < 0) {
+      expanded.push(lines[index]);
+      continue;
+    }
+
+    index += 2;
+    while (index < lines.length && lines[index].trim().startsWith('|')) {
+      const cells = lines[index]
+        .trim()
+        .replace(/^\||\|$/g, '')
+        .split('|')
+        .map((cell) => cell.trim());
+      const number = cells[numberIndex];
+      const question = cells[questionIndex];
+      const options = (cells[optionsIndex] ?? '').split(/<br\s*\/?>/i);
+      expanded.push(`${number}. ${question}`);
+      expanded.push(...options.map((option) => option.trim()).filter(Boolean));
+      index += 1;
+    }
+    index -= 1;
+  }
+
+  return expanded.join('\n');
 }
 
 export default function QuizMessage({ content }: { content: string }) {
@@ -72,8 +122,9 @@ export default function QuizMessage({ content }: { content: string }) {
             </p>
             <div>
               {item.options.map((option) => {
-                const isCorrect = answered && option.label === item.answer;
-                const isIncorrect = answered && option.label === selected && option.label !== item.answer;
+                const isCorrect = answered && Boolean(item.answer) && option.label === item.answer;
+                const isIncorrect =
+                  answered && Boolean(item.answer) && option.label === selected && option.label !== item.answer;
                 const className = [
                   'quiz-option',
                   option.label === selected ? 'selected' : '',

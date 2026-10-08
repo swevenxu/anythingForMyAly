@@ -5,6 +5,7 @@ import { tabRequestSchema } from '@/lib/validation';
 import { chat, buildSystemPrompt, buildUserMessage, type ChatMessage } from '@/lib/llm';
 import { buildQuizPrompt } from '@/lib/quiz-prompt';
 import { buildNotesPrompt } from '@/lib/notes-prompt';
+import { buildFormulaPrompt } from '@/lib/formula-prompt';
 import type { TabResponse, PageText } from '@/types';
 
 export const dynamic = 'force-dynamic';
@@ -105,13 +106,16 @@ export async function POST(request: NextRequest) {
   if (pages.length === 0) {
     if (mode === 'quiz') builtInPrompt = buildQuizPrompt(userText);
     else if (mode === 'notes') builtInPrompt = buildNotesPrompt(userText);
+    else if (mode === 'formula') builtInPrompt = buildFormulaPrompt(userText);
   }
 
-  if (mode === 'quiz' && pages.length === 0 && !builtInPrompt) {
+  if ((mode === 'quiz' || mode === 'formula') && pages.length === 0 && !builtInPrompt) {
     return NextResponse.json(
       {
         error:
-          'Quiz generation is not available right now. Check that cpa-quiz-prompts.md is present, or set CPA_QUIZ_PROMPTS_PATH.',
+          mode === 'quiz'
+            ? 'Quiz generation is not available right now. Check that cpa-quiz-prompts.md is present, or set CPA_QUIZ_PROMPTS_PATH.'
+            : 'Formula generation is not available right now. Please try again.',
       },
       { status: 503 }
     );
@@ -125,8 +129,8 @@ export async function POST(request: NextRequest) {
   let assistantContent: string;
   try {
     assistantContent = await chat(messages, {
-      maxTokens: mode === 'quiz' ? 8192 : 4096,
-      temperature: mode === 'quiz' ? 0.4 : mode === 'notes' ? 0.5 : 0.7,
+      maxTokens: mode === 'quiz' || mode === 'formula' ? 8192 : 4096,
+      temperature: mode === 'quiz' || mode === 'formula' ? 0.4 : mode === 'notes' ? 0.5 : 0.7,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';

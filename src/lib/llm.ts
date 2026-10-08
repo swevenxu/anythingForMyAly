@@ -224,6 +224,10 @@ export function buildSystemPrompt(mode: TabMode): ChatMessage {
       instruction =
         'Generate CPA board exam practice questions. Always use multiple choice with exactly four options labeled A-D and one correct answer — never true/false, essay, matching, or short-answer items. Follow any instructions in the user message about the subject, topic, number of items, difficulty, and mix. Present the questions and options first, then the answer key with a short explanation for each item, in plain text with clear numbering.';
       break;
+    case 'formula':
+      instruction =
+        'Generate a CPA formula-identification quiz in the same style as the quiz mode. Use multiple choice with exactly four formula options labeled A-D and one correct answer. Never use a table: output each question as a numbered line followed by separate A., B., C., and D. lines. Present all questions first, then an Answer Key with concise explanations. Use only the formula-bank entries supplied in the user message.';
+      break;
   }
 
   const systemContent = `${base} ${instruction}`;
@@ -257,7 +261,9 @@ export function buildUserMessage(
   const preamble =
     mode === 'quiz'
       ? `Use the following ${contextLabel} to generate practice questions. If the material is too short for the number of questions requested, produce as many as you reasonably can.\n\nSource material:\n\n`
-      : `Use the following ${contextLabel} to write study notes.\n\nSource material:\n\n`;
+      : mode === 'formula'
+        ? `Use the following ${contextLabel} to generate a formula-identification quiz. Use the supplied formulas as the question choices and do not add unsupported formulas or rates.\n\nSource material:\n\n`
+        : `Use the following ${contextLabel} to write study notes.\n\nSource material:\n\n`;
 
   return `${preamble}${sourceSection}\n\n---\n\n${userText.trim()}`;
 }

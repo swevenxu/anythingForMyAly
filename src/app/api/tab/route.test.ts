@@ -107,6 +107,26 @@ test('answers notes mode from the built-in notes prompt when no file is attached
   assert.doesNotMatch(lastUserPrompt, /Source material:/);
 });
 
+test('answers formula mode from the built-in formula prompt when no file is attached', async () => {
+  lastUserPrompt = '';
+
+  const response = await postTab({
+    mode: 'formula',
+    message: 'MAS formula guide on CVP analysis with worked examples',
+  });
+
+  assert.equal(response.status, 200);
+
+  const data = (await response.json()) as { content?: string; usedFileContext?: boolean };
+  assert.equal(data.content, 'MOCK ANSWER');
+  assert.equal(data.usedFileContext, false);
+
+  assert.match(lastUserPrompt, /creating a formula-identification quiz/);
+  assert.match(lastUserPrompt, /Subject: Management Advisory Services \(MAS\)/);
+  assert.match(lastUserPrompt, /CVP analysis/);
+  assert.match(lastUserPrompt, /Formula-bank entries available/);
+});
+
 test('asks for a subject instead of guessing when the request names none', async () => {
   lastUserPrompt = '';
 
