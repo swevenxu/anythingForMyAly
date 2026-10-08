@@ -237,7 +237,7 @@ The application uses a dual-provider setup:
 - Automatic rate limiting with sliding window
 
 **Gemini (Fallback)**
-- Model: `gemini-1.5-flash`
+- Model: `gemini-3.8-flash`
 - Activated automatically when Groq is rate-limited
 - More generous rate limits
 

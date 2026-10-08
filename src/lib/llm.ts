@@ -5,7 +5,7 @@
  * - Providers that have a key are tried in order: Groq (LLM_MODEL, default
  *   openai/gpt-oss-120b), then OpenRouter (OPENROUTER_MODEL or the first
  *   entry of OPENROUTER_MODELS), then Google Gemini (GEMINI_MODEL, default
- *   gemini-1.5-flash).
+ *   gemini-3.8-flash).
  * - Transient failures (rate limits, 5xx, network) fall through to the next
  *   provider; other errors surface immediately.
  * - If no key is configured, throw a clear error so the UI can show a friendly
@@ -44,7 +44,7 @@ const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
 const OPENROUTER_DEFAULT_MODEL = 'openrouter/auto';
 
 const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/openai';
-const GEMINI_DEFAULT_MODEL = 'gemini-1.5-flash';
+const GEMINI_DEFAULT_MODEL = 'gemini-3.8-flash';
 
 function configured(value: string | undefined): value is string {
   return typeof value === 'string' && value.trim().length > 0;
